@@ -1,2 +1,3 @@
 TAREAS PENDIENTES:
 - Preguntar al profesor por el .zip (si es el que está subido al campus)
+- Preguntar sobre qué clientes de la carperta src nos sirve (posible mvc)
