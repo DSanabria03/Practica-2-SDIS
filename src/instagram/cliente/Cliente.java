@@ -5,11 +5,11 @@ import java.rmi.Naming;
 
 public class Cliente {
     public static void main(String [ ] args) {
-        String host = "192.168.233.58:55555";
-        //String host = (args.length < 1) ? "192.168.233.58:55555" : args[0];
+        //String host = "192.168.233.58:55555";
+        String host = (args.length < 1) ? "localhost:1099" : args[0];
         try {
             instagram.servidor.Servidor or =
-                    (instagram.servidor.Servidor) Naming.lookup("rmi://192.168.233.58:55555/ObjetoHello");
+                    (instagram.servidor.Servidor) Naming.lookup("rmi://localhost:1099/ObjetoHello");
             System.out.println(or);
             String respuesta = or.sayHello();
             System.out.println("[Respuesta: "+respuesta+"]");
