@@ -1,4 +1,4 @@
-package instagram.media;
+package instagram.common;
 
 import javax.swing.*;
 import java.awt.*;
