@@ -1,0 +1,116 @@
+package instagram.server;
+
+import instagram.common.Instagram;
+import instagram.common.Media;
+
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
+import java.rmi.RemoteException;
+import java.rmi.registry.*;
+
+
+public class InstagramImpl
+        extends java.rmi.server.UnicastRemoteObject
+        implements Instagram {
+
+    ConcurrentHashMap<String, String> users = new ConcurrentHashMap<String, String>();
+
+    ConcurrentMap<String, ConcurrentLinkedQueue<Media>>  reels =
+            new ConcurrentHashMap<String, ConcurrentLinkedQueue<Media>> ();
+
+    public InstagramImpl() throws java.rmi.RemoteException {
+        super();  //es el constructor de UnicastRemoteObject.
+        users.put("hector", "1234");
+        users.put("sdis", "asdf");
+    }
+    public String hello() throws java.rmi.RemoteException {
+        return "Hola Bienvenido a Instagram :D";
+    }
+
+    public String auth(String userName, String pass) throws RemoteException {
+        try{
+            String value = users.get(userName);
+            if(value.contains(pass)){
+                return "AUTH";
+            } else {
+                return "NOAUTH";
+            }
+        }catch (NullPointerException e){
+            return "NOAUTH";
+        }
+    }
+
+    public void add2L(Media vid) throws RemoteException {
+        java.util.Queue<Media> cola = reels.get("DEFAULT");
+        if (null == cola) {
+            // putIfAbsent es atómica pero requiere "nueva", y es costoso
+            ConcurrentLinkedQueue<Media> nueva = new ConcurrentLinkedQueue<Media>();
+            ConcurrentLinkedQueue<Media> previa = reels.putIfAbsent("DEFAULT", nueva);
+            cola = (null == previa) ? nueva : previa;
+        }
+        cola.add(vid);
+    }
+
+    public void add2L(String playList, Media vid) throws RemoteException {
+        java.util.Queue<Media> cola = reels.get(playList);
+        if (null == cola) {
+            // putIfAbsent es atómica pero requiere "nueva", y es costoso
+            ConcurrentLinkedQueue<Media> nueva = new ConcurrentLinkedQueue<Media>();
+            ConcurrentLinkedQueue<Media> previa = reels.putIfAbsent(playList, nueva);
+            cola = (null == previa) ? nueva : previa;
+        }
+        cola.add(vid);
+    }
+
+    public Media readL() throws RemoteException {
+        java.util.Queue<Media> cola = reels.get("DEFAULT");
+        return cola.poll();
+    }
+
+    public Media readL(String playList) throws RemoteException {
+        java.util.Queue<Media> cola = reels.get(playList);
+        return cola.poll();
+    }
+
+    public Media peekL() throws RemoteException {
+        java.util.Queue<Media> cola = reels.get("DEFAULT");
+        return cola.peek();
+    }
+
+    public Media peekL(String playList) throws RemoteException {
+        java.util.Queue<Media> cola = reels.get(playList);
+        return cola.peek();
+    }
+
+    public String deleteL(String playList) throws RemoteException {
+        java.util.Queue<Media> cola = reels.get(playList);
+        if (null == cola) {
+            return "EMPTY";
+        }
+        reels.remove(playList);
+        return "DELETED";
+    }
+
+    public String[] getDirectoryList() throws RemoteException {
+        Registry registro = LocateRegistry.getRegistry("localhost");
+        return registro.list();
+    }
+
+    public Media retrieveMedia(String id) throws RemoteException {
+        return null;
+    }
+
+    public String addLike(String id) throws RemoteException {
+        return null;
+    }
+
+    public String addComent(String id, String comment) throws RemoteException {
+        return null;
+    }
+
+    public String setCover(Media vid) throws RemoteException {
+        return null;
+    }
+}

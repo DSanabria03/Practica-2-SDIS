@@ -1,4 +1,4 @@
-package instagram.cliente;
+package instagram.client.unit;
 import instagram.common.Instagram;
 
 import java.rmi.Naming;
@@ -11,7 +11,7 @@ public class Cliente {
             Instagram or =
                     (Instagram) Naming.lookup("rmi://localhost:1099/ObjetoHello");
             System.out.println(or);
-            String respuesta = or.sayHello();
+            String[] respuesta = or.getDirectoryList();
             System.out.println("[Respuesta: "+respuesta+"]");
         } catch (java.rmi.RemoteException re) {
             System.err.println("<Cliente: Excepción RMI: "+re);

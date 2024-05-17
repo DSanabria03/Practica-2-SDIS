@@ -1,4 +1,4 @@
-package instagram.servidor;
+package instagram.server;
 
 public class Lanzador {
     public static void main(String [ ] args) {
