@@ -17,7 +17,7 @@ public class InstagramImpl
 
     ConcurrentHashMap<String, String> users = new ConcurrentHashMap<String, String>();
 
-    ConcurrentMap<String, ConcurrentLinkedQueue<Media>>  reels =
+    ConcurrentMap<String, ConcurrentLinkedQueue<Media>> reels =
             new ConcurrentHashMap<String, ConcurrentLinkedQueue<Media>> ();
 
     public InstagramImpl() throws java.rmi.RemoteException {
@@ -99,18 +99,34 @@ public class InstagramImpl
     }
 
     public Media retrieveMedia(String id) throws RemoteException {
+        String[] directorio = getDirectoryList();
+        Media elemento;
+        for (int i = 0; i < directorio.length; i++) {
+            if(directorio[i].equals(id)) {
+                elemento = new Media(directorio[i]);
+                return elemento;
+            }
+        }
         return null;
     }
 
     public String addLike(String id) throws RemoteException {
-        return null;
+        Media elemento = retrieveMedia(id);
+        elemento.addLike();
+        return "SE HA AÑADIDO UN LIKE";
     }
 
     public String addComent(String id, String comment) throws RemoteException {
-        return null;
+        if(comment.length() > 100){
+            return "SE HA SUPERADO EL NÚMERO MÁXIMO DE CARACTERES";
+        }
+        Media elemento = retrieveMedia(id);
+        elemento.addComment(comment);
+        return "SE HA AGREGADO EL COMENTARIO";
     }
 
     public String setCover(Media vid) throws RemoteException {
-        return null;
+        vid.setCover(vid.getCover());
+        return "SE HA CAMBIADO LA CARÁTULA";
     }
 }

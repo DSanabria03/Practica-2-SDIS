@@ -1,6 +1,9 @@
-TAREAS PENDIENTES:
+TAREAS HECHAS:
 - Preguntar al profesor por el .zip (si es el que está subido al campus)
 - Preguntar sobre qué clientes de la carperta src nos sirve (posible mvc)
-- instagramimpl le faltan las ultimas funciones de registro
-- crear los clientes que utilizen las acciones
--
+
+TAREAS A REVISAR:
+- Eliminar Clases Lanzador del instagram.server y Cliente del instagram.client.unit o de los otros packages?????
+
+TAREAS PENDIENTES:
+- Crear los clientes que utilizen las acciones
