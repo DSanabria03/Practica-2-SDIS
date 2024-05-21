@@ -1,8 +1,13 @@
-package instagram.server;
+package instagram.rmi.server;
 
-import instagram.common.Instagram;
-import instagram.common.Media;
+import instagram.rmi.common.Instagram;
+import instagram.media.Media;
+import instagram.media.Globals;
+import instagram.media.MediaPlayer;
+import instagram.rmi.common.InstagramClient;
+import instagram.stream.ServerStream;
 
+import java.awt.event.WindowStateListener;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -11,20 +16,22 @@ import java.rmi.RemoteException;
 import java.rmi.registry.*;
 
 
-public class InstagramImpl
+
+public class ServerImpl
         extends java.rmi.server.UnicastRemoteObject
         implements Instagram {
-
+private InstagramClient cliente;
     ConcurrentHashMap<String, String> users = new ConcurrentHashMap<String, String>();
 
     ConcurrentMap<String, ConcurrentLinkedQueue<Media>> reels =
             new ConcurrentHashMap<String, ConcurrentLinkedQueue<Media>> ();
 
-    public InstagramImpl() throws java.rmi.RemoteException {
+    public ServerImpl() throws java.rmi.RemoteException {
         super();  //es el constructor de UnicastRemoteObject.
         users.put("hector", "1234");
         users.put("sdis", "asdf");
     }
+
     public String hello() throws java.rmi.RemoteException {
         return "Hola Bienvenido a Instagram :D";
     }
@@ -129,4 +136,52 @@ public class InstagramImpl
         vid.setCover(vid.getCover());
         return "SE HA CAMBIADO LA CARÁTULA";
     }
+
+    public Boolean setClientStreamReceptor(InstagramClient cliente) throws RemoteException{
+        try{
+            this.cliente = cliente;
+            return Boolean.TRUE;
+        } catch (Exception e){
+            return Boolean.FALSE;
+        }
+    }
+
+
+    public String startMedia(Media mv) throws RemoteException{
+        // 1. CHECKS
+        if(mv == null){
+            return "Media class is Null";
+        }
+
+
+
+        // 2. PREPARE A SERVERSOCKET FOR THE STREAMING
+        String pathFile = Globals.path_origin+mv.getName()+Globals.file_extension;
+        ServerStream ss = new ServerStream(pathFile, this.cliente);
+        new Thread(ss, "streamserver").start();
+        try{ Thread.sleep(2000); }
+        catch (InterruptedException e) { e.printStackTrace(); }
+
+        // 3. LAUNCH CLIENT MEDIAPLAYER
+        System.out.println("- Checking MediaPlayer status...");
+        try {
+            if (!this.cliente.launchMediaPlayer(mv)) return "Launcher cannot be triggered";
+        } catch (Exception e){
+            e.printStackTrace();
+            return "Error launching Media Player at client";
+        }
+
+        // 4. READY FOR STREAMING, PLEASE CLIENT GO GO GO
+        System.out.println("- Sending server streaming ready signal..."+Globals.server_host+":"+ss.getServerSocketPort());
+        try {
+            this.cliente.startStream(mv, Globals.server_host, ss.getServerSocketPort());
+        } catch (Exception e){
+            e.printStackTrace();
+            return "Error during streaming at client";
+        }
+        return "MEDIA "+mv.getName()+" started";
+    }
+
+
+
 }

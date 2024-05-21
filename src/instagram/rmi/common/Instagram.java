@@ -1,4 +1,6 @@
-package instagram.common;
+package instagram.rmi.common;
+import instagram.media.Media;
+
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 

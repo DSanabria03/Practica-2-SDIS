@@ -1,9 +1,9 @@
-package instagram.server;
+package instagram.rmi.server;
 
 public class Lanzador {
     public static void main(String [ ] args) {
         try {
-            InstagramImpl oRemoto = new InstagramImpl();
+            ServerImpl oRemoto = new ServerImpl();
             //Accedemos a una referencia al registro (rmiregistry) local
             java.rmi.registry.Registry registro =
                     java.rmi.registry.LocateRegistry.createRegistry(1099);
