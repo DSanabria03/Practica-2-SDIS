@@ -14,7 +14,7 @@ public interface Instagram extends Remote {
     Media peekL() throws RemoteException;
     Media peekL(String playList) throws RemoteException;
     String deleteL(String playList) throws RemoteException;
-    String[] getDirectoryList() throws RemoteException;
+    String getDirectoryList() throws RemoteException;
     Media retrieveMedia(String id) throws RemoteException;
     String addLike(String id) throws RemoteException;
     String addComent(String id, String comment) throws RemoteException;

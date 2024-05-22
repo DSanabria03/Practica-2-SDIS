@@ -6,7 +6,7 @@ import instagram.media.Globals;
 import instagram.media.MediaPlayer;
 import instagram.rmi.common.InstagramClient;
 import instagram.stream.ServerStream;
-
+import instagram.rmi.server.MultiMap;
 import java.awt.event.WindowStateListener;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -21,10 +21,12 @@ public class ServerImpl
         extends java.rmi.server.UnicastRemoteObject
         implements Instagram {
 private InstagramClient cliente;
-    ConcurrentHashMap<String, String> users = new ConcurrentHashMap<String, String>();
+    ConcurrentHashMap<String, String> users = new ConcurrentHashMap<>();
 
-    ConcurrentMap<String, ConcurrentLinkedQueue<Media>> reels =
-            new ConcurrentHashMap<String, ConcurrentLinkedQueue<Media>> ();
+    MultiMap<String, Media> reels =
+            new MultiMap<String, Media> ();
+
+    ConcurrentHashMap<String, Media> directory = new ConcurrentHashMap<> ();
 
     public ServerImpl() throws java.rmi.RemoteException {
         super();  //es el constructor de UnicastRemoteObject.
@@ -50,91 +52,82 @@ private InstagramClient cliente;
     }
 
     public void add2L(Media vid) throws RemoteException {
-        java.util.Queue<Media> cola = reels.get("DEFAULT");
-        if (null == cola) {
-            // putIfAbsent es atómica pero requiere "nueva", y es costoso
-            ConcurrentLinkedQueue<Media> nueva = new ConcurrentLinkedQueue<Media>();
-            ConcurrentLinkedQueue<Media> previa = reels.putIfAbsent("DEFAULT", nueva);
-            cola = (null == previa) ? nueva : previa;
-        }
-        cola.add(vid);
+        this.add2L("DEFAULT", vid);
     }
 
     public void add2L(String playList, Media vid) throws RemoteException {
-        java.util.Queue<Media> cola = reels.get(playList);
-        if (null == cola) {
-            // putIfAbsent es atómica pero requiere "nueva", y es costoso
-            ConcurrentLinkedQueue<Media> nueva = new ConcurrentLinkedQueue<Media>();
-            ConcurrentLinkedQueue<Media> previa = reels.putIfAbsent(playList, nueva);
-            cola = (null == previa) ? nueva : previa;
+        Media video = directory.get(vid.getName());
+        if(null == video){
+            directory.put(vid.getName(), vid);
+            reels.push(playList, vid);
+        } else{
+            reels.push(playList, video);
         }
-        cola.add(vid);
     }
 
     public Media readL() throws RemoteException {
-        java.util.Queue<Media> cola = reels.get("DEFAULT");
-        return cola.poll();
+        return reels.pop("DEFAULT");
     }
 
     public Media readL(String playList) throws RemoteException {
-        java.util.Queue<Media> cola = reels.get(playList);
-        return cola.poll();
+        return reels.pop(playList);
     }
 
     public Media peekL() throws RemoteException {
-        java.util.Queue<Media> cola = reels.get("DEFAULT");
-        return cola.peek();
+        return reels.getValor("DEFAULT");
     }
 
     public Media peekL(String playList) throws RemoteException {
-        java.util.Queue<Media> cola = reels.get(playList);
-        return cola.peek();
+        return reels.getValor(playList);
     }
 
     public String deleteL(String playList) throws RemoteException {
-        java.util.Queue<Media> cola = reels.get(playList);
+        Boolean cola = reels.existe(playList);
         if (null == cola) {
             return "EMPTY";
         }
-        reels.remove(playList);
+        reels.delete(playList);
         return "DELETED";
     }
 
-    public String[] getDirectoryList() throws RemoteException {
-        Registry registro = LocateRegistry.getRegistry("localhost");
-        return registro.list();
+    public String getDirectoryList() throws RemoteException {
+        return directory.keySet().toString();
     }
 
     public Media retrieveMedia(String id) throws RemoteException {
-        String[] directorio = getDirectoryList();
-        Media elemento;
-        for (int i = 0; i < directorio.length; i++) {
-            if(directorio[i].equals(id)) {
-                elemento = new Media(directorio[i]);
-                return elemento;
-            }
-        }
-        return null;
+        return directory.get(id);
     }
 
     public String addLike(String id) throws RemoteException {
-        Media elemento = retrieveMedia(id);
-        elemento.addLike();
-        return "SE HA AÑADIDO UN LIKE";
+        try{
+            Media elemento = retrieveMedia(id);
+            elemento.addLike();
+            return "SE HA AÑADIDO UN LIKE";
+        }catch (Exception e){
+            return e.toString();
+        }
     }
 
     public String addComent(String id, String comment) throws RemoteException {
         if(comment.length() > 100){
             return "SE HA SUPERADO EL NÚMERO MÁXIMO DE CARACTERES";
         }
-        Media elemento = retrieveMedia(id);
-        elemento.addComment(comment);
-        return "SE HA AGREGADO EL COMENTARIO";
+        try{
+            Media elemento = retrieveMedia(id);
+            elemento.addComment(comment);
+            return "SE HA AGREGADO EL COMENTARIO";
+        }catch (Exception e){
+            return e.toString();
+        }
     }
 
     public String setCover(Media vid) throws RemoteException {
-        vid.setCover(vid.getCover());
-        return "SE HA CAMBIADO LA CARÁTULA";
+        try{
+            vid.setCover(vid.getCover());
+            return "SE HA CAMBIADO LA CARÁTULA";
+        }catch (Exception e){
+            return e.toString();
+        }
     }
 
     public Boolean setClientStreamReceptor(InstagramClient cliente) throws RemoteException{
@@ -150,10 +143,11 @@ private InstagramClient cliente;
     public String startMedia(Media mv) throws RemoteException{
         // 1. CHECKS
         if(mv == null){
-            return "Media class is Null";
+            return "Media inserted is Null";
         }
-
-
+        if(null == directory.get(mv.getName())){
+            return "Este archivo no se encuentra en el directorio, añadalo";
+        }
 
         // 2. PREPARE A SERVERSOCKET FOR THE STREAMING
         String pathFile = Globals.path_origin+mv.getName()+Globals.file_extension;
