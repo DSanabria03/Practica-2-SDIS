@@ -3,21 +3,14 @@ package instagram.rmi.server;
 import instagram.rmi.common.Instagram;
 import instagram.media.Media;
 import instagram.media.Globals;
-import instagram.media.MediaPlayer;
 import instagram.rmi.common.InstagramClient;
 import instagram.stream.ServerStream;
-import instagram.rmi.server.MultiMap;
-import java.awt.event.WindowStateListener;
+
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 import java.rmi.RemoteException;
-import java.rmi.registry.*;
 
-
-
-public class ServerImpl
+public class InstagramServerImpl
         extends java.rmi.server.UnicastRemoteObject
         implements Instagram {
 private InstagramClient cliente;
@@ -28,7 +21,7 @@ private InstagramClient cliente;
 
     ConcurrentHashMap<String, Media> directory = new ConcurrentHashMap<> ();
 
-    public ServerImpl() throws java.rmi.RemoteException {
+    public InstagramServerImpl() throws java.rmi.RemoteException {
         super();  //es el constructor de UnicastRemoteObject.
         users.put("hector", "1234");
         users.put("sdis", "asdf");

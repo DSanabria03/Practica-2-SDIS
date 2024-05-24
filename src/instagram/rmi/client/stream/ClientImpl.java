@@ -9,7 +9,7 @@ public class ClientImpl {
 
     private Thread playerThread;
 
-    public Boolean  launchMediaPlayer(Media story) throws java.rmi.RemoteException{
+    public Boolean launchMediaPlayer(Media story) throws java.rmi.RemoteException{
         try{
             MediaPlayer mediaplayer = new MediaPlayer(
                     Globals.player_command,

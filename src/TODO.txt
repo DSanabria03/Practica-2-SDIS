@@ -3,7 +3,6 @@ TAREAS HECHAS:
 - Preguntar sobre qué clientes de la carperta src nos sirve (posible mvc)
 
 TAREAS A REVISAR:
-- Eliminar Clases Lanzador del instagram.server y Cliente del instagram.client.unit o de los otros packages?????
 
 TAREAS PENDIENTES:
 - Crear los clientes que utilizen las acciones
