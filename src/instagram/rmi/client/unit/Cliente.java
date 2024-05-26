@@ -9,6 +9,8 @@ public class Cliente {
         //String host = "192.168.233.58:55555";
         String host = (args.length < 1) ? "localhost:1099" : args[0];
         try {
+            javax.rmi.ssl.SslRMIClientSocketFactory rmicsf = new javax.rmi.ssl.SslRMIClientSocketFactory();
+            java.rmi.registry.LocateRegistry.getRegistry("localhost", 1099, rmicsf);
             Instagram or =
                     (Instagram) Naming.lookup("rmi://localhost:1099/ObjetoHello");
             System.out.println(or);
