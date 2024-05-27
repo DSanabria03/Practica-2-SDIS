@@ -5,12 +5,12 @@ public class ServerLauncher {
         try {
             javax.rmi.ssl.SslRMIClientSocketFactory rmicsf = new javax.rmi.ssl.SslRMIClientSocketFactory();
             javax.rmi.ssl.SslRMIServerSocketFactory rmissf = new javax.rmi.ssl.SslRMIServerSocketFactory();
-
-            InstagramServerImpl oRemoto = new InstagramServerImpl(rmicsf, rmissf);
-            //Accedemos a una referencia al registro (rmiregistry) local
             java.rmi.registry.Registry registro =
                     java.rmi.registry.LocateRegistry.createRegistry(1099, rmicsf, rmissf);
             //registramos el objeto, hablaremos más adelante de re-bind
+            InstagramServerImpl oRemoto = new InstagramServerImpl(rmicsf, rmissf);
+            //Accedemos a una referencia al registro (rmiregistry) local
+
             registro.rebind("ObjetoHello", oRemoto);
             System.err.println("Servidor preparado");
         } catch (Exception e) {

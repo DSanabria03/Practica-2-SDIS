@@ -10,9 +10,10 @@ public class Cliente {
         String host = (args.length < 1) ? "localhost:1099" : args[0];
         try {
             javax.rmi.ssl.SslRMIClientSocketFactory rmicsf = new javax.rmi.ssl.SslRMIClientSocketFactory();
-            java.rmi.registry.LocateRegistry.getRegistry("localhost", 1099, rmicsf);
+            java.rmi.registry.Registry reg =
+                java.rmi.registry.LocateRegistry.getRegistry("localhost", 1099, rmicsf);
             Instagram or =
-                    (Instagram) Naming.lookup("rmi://localhost:1099/ObjetoHello");
+                    (Instagram) reg.lookup("ObjetoHello");
             System.out.println(or);
             Media var = new Media("Video1");
             or.add2L(var);
