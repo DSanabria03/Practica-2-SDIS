@@ -3,6 +3,7 @@ TAREAS HECHAS:
 - Preguntar sobre qué clientes de la carperta src nos sirve (posible mvc)
 
 TAREAS A REVISAR:
+- Media
 
 TAREAS PENDIENTES:
 - Crear los clientes que utilizen las acciones

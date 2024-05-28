@@ -5,7 +5,7 @@ import instagram.media.Media;
 import instagram.media.MediaPlayer;
 import instagram.stream.ClientStream;
 
-public class ClientImpl {
+public class InstagramClientImpl {
 
     private Thread playerThread;
 

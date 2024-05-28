@@ -135,6 +135,9 @@ public class InstagramServerImpl
         }
     }
 
+    public String randomPlay(){
+        return "";
+    }
 
     public String startMedia(Media mv) throws RemoteException{
         // 1. CHECKS
