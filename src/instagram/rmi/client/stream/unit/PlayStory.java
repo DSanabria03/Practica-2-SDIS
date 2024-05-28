@@ -17,8 +17,8 @@ public class PlayStory {
             Media media = new Media("Video1");
             or.add2L(media);
             InstagramServer server = (InstagramServer) reg.lookup("ObjetoHello");
-            //InstagramClientImpl client = new InstagramClientImpl(rmicsf,rmissf);
-            //server.setClientStreamReceptor(client);
+            InstagramClientImpl client = new InstagramClientImpl(rmicsf,rmissf);
+            server.setClientStreamReceptor(client);
             server.startMedia(media);
             System.out.println(or);
             String res = or.getDirectoryList();
