@@ -8,10 +8,10 @@ import instagram.rmi.common.InstagramServer;
 public class PlayStory {
     public static void main(String[] args) {
         try {
-            javax.rmi.ssl.SslRMIClientSocketFactory rmicsf = new javax.rmi.ssl.SslRMIClientSocketFactory();
-            javax.rmi.ssl.SslRMIServerSocketFactory rmissf = new javax.rmi.ssl.SslRMIServerSocketFactory();
+            //javax.rmi.ssl.SslRMIClientSocketFactory rmicsf = new javax.rmi.ssl.SslRMIClientSocketFactory();
+            //javax.rmi.ssl.SslRMIServerSocketFactory rmissf = new javax.rmi.ssl.SslRMIServerSocketFactory();
             java.rmi.registry.Registry reg =
-                    java.rmi.registry.LocateRegistry.getRegistry("localhost", 1099, rmicsf);
+                    java.rmi.registry.LocateRegistry.getRegistry("localhost", 1099);
             Instagram or =
                     (Instagram) reg.lookup("ObjetoHello");
             Media media = new Media("Video1");
@@ -25,7 +25,7 @@ public class PlayStory {
             Media media5 = new Media("Video5");
             or.add2L(media5);
             InstagramServer server = (InstagramServer) reg.lookup("ObjetoHello");
-            InstagramClientImpl client = new InstagramClientImpl(rmicsf,rmissf);
+            InstagramClientImpl client = new InstagramClientImpl();
             server.setClientStreamReceptor(client);
             server.startMedia(media4);
             System.out.println(or);

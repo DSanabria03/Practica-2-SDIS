@@ -17,8 +17,8 @@ public class InstagramClientImpl
     private Thread playerThread;
     private String ip;
 
-    public InstagramClientImpl(javax.rmi.ssl.SslRMIClientSocketFactory rmicsf,javax.rmi.ssl.SslRMIServerSocketFactory rmissf) throws java.rmi.RemoteException, UnknownHostException {
-        super(0,rmicsf,rmissf);
+    public InstagramClientImpl(/*javax.rmi.ssl.SslRMIClientSocketFactory rmicsf,javax.rmi.ssl.SslRMIServerSocketFactory rmissf*/) throws java.rmi.RemoteException, UnknownHostException {
+        super(0/*,rmicsf,rmissf*/);
         this.ip = InetAddress.getLocalHost().getHostAddress();
     }
 

@@ -11,7 +11,7 @@ public class Cliente {
         try {
             javax.rmi.ssl.SslRMIClientSocketFactory rmicsf = new javax.rmi.ssl.SslRMIClientSocketFactory();
             java.rmi.registry.Registry reg =
-                java.rmi.registry.LocateRegistry.getRegistry("localhost", 1099, rmicsf);
+                java.rmi.registry.LocateRegistry.getRegistry("localhost", 1099/*, rmicsf*/);
             Instagram or =
                     (Instagram) reg.lookup("ObjetoHello");
             System.out.println(or);

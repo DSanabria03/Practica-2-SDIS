@@ -23,11 +23,10 @@ public class InstagramServerImpl
     ConcurrentHashMap<String, Media> directory = new ConcurrentHashMap<>();
     ConcurrentHashMap<String, InstagramClient> clients = new ConcurrentHashMap<>();
 
-    public InstagramServerImpl(java.rmi.server.RMIClientSocketFactory rmicsf,
-                               java.rmi.server.RMIServerSocketFactory rmissf)
+    public InstagramServerImpl(/*java.rmi.server.RMIClientSocketFactory rmicsf, java.rmi.server.RMIServerSocketFactory rmissf*/)
             throws java.rmi.RemoteException {
 
-        super(0, rmicsf, rmissf);  //es el constructor de UnicastRemoteObject.
+        super(0/*, rmicsf, rmissf*/);  //es el constructor de UnicastRemoteObject.
         users.put("hector", "1234");
         users.put("sdis", "asdf");
     }
