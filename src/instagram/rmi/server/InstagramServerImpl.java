@@ -4,6 +4,7 @@ import instagram.rmi.common.Instagram;
 import instagram.media.Media;
 import instagram.media.Globals;
 import instagram.rmi.common.InstagramClient;
+import instagram.rmi.common.InstagramServer;
 import instagram.stream.ServerStream;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -12,14 +13,15 @@ import java.rmi.RemoteException;
 
 public class InstagramServerImpl
         extends java.rmi.server.UnicastRemoteObject
-        implements Instagram {
+        implements InstagramServer,Instagram {
         private InstagramClient cliente;
     ConcurrentHashMap<String, String> users = new ConcurrentHashMap<>();
 
     MultiMap<String, Media> reels =
             new MultiMap<String, Media> ();
 
-    ConcurrentHashMap<String, Media> directory = new ConcurrentHashMap<> ();
+    ConcurrentHashMap<String, Media> directory = new ConcurrentHashMap<>();
+    ConcurrentHashMap<String, InstagramClient> clients = new ConcurrentHashMap<>();
 
     public InstagramServerImpl(java.rmi.server.RMIClientSocketFactory rmicsf,
                                java.rmi.server.RMIServerSocketFactory rmissf)
@@ -129,6 +131,7 @@ public class InstagramServerImpl
     public Boolean setClientStreamReceptor(InstagramClient cliente) throws RemoteException{
         try{
             this.cliente = cliente;
+            clients.put(cliente.getIp(),cliente);
             return Boolean.TRUE;
         } catch (Exception e){
             return Boolean.FALSE;
@@ -157,6 +160,7 @@ public class InstagramServerImpl
 
         // 3. LAUNCH CLIENT MEDIAPLAYER
         System.out.println("- Checking MediaPlayer status...");
+
         try {
             if (!this.cliente.launchMediaPlayer(mv)) return "Launcher cannot be triggered";
         } catch (Exception e){

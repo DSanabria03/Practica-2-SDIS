@@ -1,7 +1,5 @@
 package instagram.rmi.server;
 
-import instagram.rmi.common.InstagramClient;
-
 public class ServerLauncher {
     public static void main(String [ ] args) {
         try {
@@ -11,12 +9,9 @@ public class ServerLauncher {
                     java.rmi.registry.LocateRegistry.createRegistry(1099, rmicsf, rmissf);
             //registramos el objeto, hablaremos más adelante de re-bind
             InstagramServerImpl oRemoto = new InstagramServerImpl(rmicsf, rmissf);
-            InstagramClient cliente;
             //Accedemos a una referencia al registro (rmiregistry) local
             registro.rebind("ObjetoHello", oRemoto);
             System.err.println("Servidor preparado");
-            //oRemoto.setClientStreamReceptor(cliente);
-            oRemoto.randomPlay();
         } catch (Exception e) {
             System.err.println("Excepción del servidor: "+e.toString());
             e.printStackTrace();

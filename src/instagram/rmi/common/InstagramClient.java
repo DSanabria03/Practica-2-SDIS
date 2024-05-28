@@ -9,4 +9,5 @@ public interface InstagramClient extends Remote {
     Boolean  launchMediaPlayer(Media story) throws RemoteException;
     Boolean isMediaPlayerActive() throws RemoteException;
     void startStream(Media story, String ip, Integer port) throws RemoteException;
+    String getIp() throws RemoteException;
 }
